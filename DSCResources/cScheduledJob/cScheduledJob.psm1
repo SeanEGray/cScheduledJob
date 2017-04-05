@@ -79,4 +79,8 @@ class cScheduledJob {
 
 	}
 
+	[void] Set () {
+
+	}
+
 }
