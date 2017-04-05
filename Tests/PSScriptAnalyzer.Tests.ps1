@@ -3,7 +3,7 @@
 #>
 
 $Rules   = Get-ScriptAnalyzerRule
-$PSFiles = Get-ChildItem "$PSScriptRoot\DSCResources\" -Filter '*.psm1' -Recurse
+$PSFiles = Get-ChildItem "$PSScriptRoot\..\DSCResources\" -Filter '*.psm1' -Recurse
 
 foreach ($PSFile in $PSFiles) {
 	Describe $PSFile {
