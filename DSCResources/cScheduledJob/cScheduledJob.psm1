@@ -78,6 +78,5 @@ class cScheduledJob {
 	[bool] Test () {
 
 	}
-	
-	}
+
 }
