@@ -183,7 +183,81 @@ class cScheduledJob {
 	}
 
 	[void] Set () {
-
+		Write-Verbose "Testing for Scheduled Job: $($this.Name)."
+		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
+		if ($job.Count -eq 1) {
+			if ($this.Ensure -eq [Ensure]::Absent) {
+				Write-Verbose 'Job should not exist.'
+				# We use force here to remove the job even if it's running. This may not be the correct behaviour in all situations; unsure what the best way to deal with this is.
+				Unregister-ScheduledJob -Name $this.Name -Force
+			}
+			else {
+				Write-Verbose 'Job should exist. Checking settings.'
+				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK
+				if ($this.FilePath -and -not $this.ScriptBlock) {
+					Write-Verbose 'Job is a FilePath job.'
+					if ($this.FilePath -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value) {
+						Write-Verbose 'FilePath does not match.'
+						## FIX FILEPATH
+					}
+				}
+				elseif ($this.ScriptBlock -and -not $this.FilePath) {
+					Write-Verbose 'Job is a ScriptBlock job.'
+					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value) {
+						Write-Verbose 'ScriptBlock does not match.'
+						## FIX SCRIPTBLOCK
+					}
+				}
+				else {
+					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
+					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
+				}
+				if ($null -ne $this.Enabled -and $this.Enabled -ne $job.Enabled) {
+					if ($this.Enabled) {
+						Write-Verbose 'Enabling job.'
+						Enable-ScheduledJob -Name $this.Name
+					}
+					else {
+						Write-Verbose 'Disabling job.'
+						Disable-ScheduledJob -Name $this.Name 
+					}
+				}
+				if ($this.ArgumentList -and $this.ArgumentList -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
+					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
+					Write-Verbose 'ArgumentList does not match.'
+					## FIX ARGUMENTLIST
+				}
+				if ($this.Authentication -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
+					Write-Verbose 'Authentication does not match.'
+					## FIX AUTHENTICATION
+				}
+				if ($this.Credential -and $this.Credential -ne $job.Credential) {
+					# NOT CONVINCED THAT THIS WILL WORK. FIXME.
+					Write-Verbose 'Credential does not match.'
+					## FIX CREDENTIAL
+				}
+				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
+					# Check what happens when you compare scriptblocks.
+					Write-Verbose 'InitializationScript does not match.'
+					## FIX INITIALIZATIONSCRIPT
+				}
+				if ($this.MaxResultCount -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
+					Write-Verbose 'MaxResultCount does not match.'
+					## FIX MAXRESULTCOUNT
+				}
+				if ($null -ne $this.RunAs32 -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
+					Write-Verbose 'RunAs32 does not match.'
+					## FIX RUNAS32
+				}
+			}
+		}
+		else {
+			Write-Verbose 'Job not found.'
+			if ($this.Ensure -eq [Ensure]::Present) {
+				Write-Verbose 'Job should exist.'
+				## CREATE JOB
+			}
+		}
 	}
 
 }
