@@ -260,7 +260,16 @@ class cScheduledJob {
 			if ($this.Ensure -eq [Ensure]::Present) {
 				Write-Verbose 'Creating job.'
 				$ParamSplat = @{Name = $this.Name}
-				## SOMETHING ABOUT FILEPATH OR SCRIPTBLOCK
+				if ($this.FilePath -and -not $this.ScriptBlock) {
+					$ParamSplat.Add('FilePath', $this.FilePath)
+				}
+				elseif ($this.ScriptBlock -and -not $this.FilePath) {
+					$ParamSplat.Add('ScriptBlock', $this.ScriptBlock)
+				}
+				else {
+					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
+					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
+				}
 				if ($this.ArgumentList) {
 					$ParamSplat.Add('ArgumentList', $this.ArgumentList)
 				}
