@@ -73,6 +73,7 @@ class cScheduledJob {
 		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
 		if ($job.Count -eq 1) {
 			Write-Verbose 'Job found. Checking whether it has a FilePath or a ScriptBlock.'
+			$this.Ensure = [Ensure]::Present
 			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.count -gt 0) {
 				Write-Verbose 'This is a FilePath job.'
 				$this.FilePath = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value
@@ -111,7 +112,46 @@ class cScheduledJob {
 
 	[bool] Test () {
 		Write-Verbose "Testing for Scheduled Job: $($this.Name)."
+		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
+		if ($job.Count -eq 1) {
+			if ($this.Ensure -eq [Ensure]::Absent) {
+				Write-Verbose 'Job should not exist.'
+				return $false
+			}
+			else {
+				Write-Verbose 'Job should exist. Checking settings.'
+				if ($this.FilePath -and -not $this.ScriptBlock) {
+					Write-Verbose 'Job is a FilePath job.'
+					if ($this.FilePath -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value) {
+						Write-Verbose 'FilePath does not match.'
+						return $false
+					}
+				}
+				elseif ($this.ScriptBlock -and -not $this.FilePath) {
+					Write-Verbose 'Job is a ScriptBlock job.'
+					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value) {
+						Write-Verbose 'ScriptBlock does not match.'
+						return $false
+					}
+				}
+				else {
+					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
+					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
+				}
 
+			}
+		}
+		else {
+			Write-Verbose 'Job not found.'
+			if ($this.Ensure -eq [Ensure]::Present) {
+				Write-Verbose 'Job should exist.'
+				return $false
+			}
+			else {
+				Write-Verbose 'Job should not exist.'
+				return $true
+			}
+		}
 	}
 
 	[void] Set () {
