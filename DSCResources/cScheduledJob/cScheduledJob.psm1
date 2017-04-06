@@ -258,8 +258,33 @@ class cScheduledJob {
 		else {
 			Write-Verbose 'Job not found.'
 			if ($this.Ensure -eq [Ensure]::Present) {
-				Write-Verbose 'Job should exist.'
-				## CREATE JOB
+				Write-Verbose 'Creating job.'
+				$ParamSplat = @{Name = $this.Name}
+				## SOMETHING ABOUT FILEPATH OR SCRIPTBLOCK
+				if ($this.ArgumentList) {
+					$ParamSplat.Add('ArgumentList', $this.ArgumentList)
+				}
+				if ($this.Authentication) {
+					$ParamSplat.Add('Authentication', $this.Authentication)
+				}
+				if ($this.Credential) {
+					$ParamSplat.Add('Credential', $this.Credential)
+				}
+				if ($this.InitializationScript) {
+					$ParamSplat.Add('InitializationScript', $this.InitializationScript)
+				}
+				if ($this.MaxResultCount) {
+					$ParamSplat.Add('MaxResultCount', $this.MaxResultCount)
+				}
+				if ($null -ne $this.RunAs32) {
+					$ParamSplat.Add('RunAs32', $this.RunAs32)
+				}
+				Register-ScheduledJob @ParamSplat 
+
+				if ($null -ne $this.Enabled -and $this.Enabled -eq $false) {
+					Write-Verbose 'Disabling job.'
+					Disable-ScheduledJob -Name $this.Name
+				}
 			}
 		}
 	}
