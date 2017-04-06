@@ -67,6 +67,7 @@ class cScheduledJob {
 	[DscProperty()]
 	[cJobTrigger[]] $Trigger
 	#>
+
 	[cScheduledJob] Get () {
 		Write-Verbose "Retrieving Scheduled Job: $($this.Name)."
 		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
@@ -80,17 +81,25 @@ class cScheduledJob {
 				Write-Verbose 'This is a ScriptBlock job.'
 				$this.ScriptBlock = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value
 			}
-			Write-Verbose 'Retrieving other properties.'
+			Write-Verbose 'Checking whether job is enabled.'
 			$this.Enabled = $job.Enabled
+			Write-Verbose 'Checking whether job has an argument list.'
 			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.count -gt 0) {
+				Write-Verbose 'Job does have an argument list.'
 				$this.ArgumentList = InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
 			}
+			Write-Verbose 'Checking authentication method.'
 			$this.Authentication = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value
+			Write-Verbose 'Checking credential that job runs under.'
 			$this.Credential = $job.Credential
+			Write-Verbose 'Checking whether job has an initialization script.'
 			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.count -gt 0) {
+				Write-Verbose 'Job does have an initialization script.'
 				$this.InitializationScript = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value
 			}
+			Write-Verbose 'Checking max result count.'
 			$this.MaxResultCount = $job.ExecutionHistoryLength
+			Write-Verbose 'Checking whether job runs as a 32-bit process.'
 			$this.RunAs32 = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value
 		}
 		else {
@@ -101,6 +110,7 @@ class cScheduledJob {
 	}
 
 	[bool] Test () {
+		Write-Verbose "Testing for Scheduled Job: $($this.Name)."
 
 	}
 
