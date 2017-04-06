@@ -187,13 +187,13 @@ class cScheduledJob {
 		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
 		if ($job.Count -eq 1) {
 			if ($this.Ensure -eq [Ensure]::Absent) {
-				Write-Verbose 'Job should not exist.'
+				Write-Verbose 'Removing job.'
 				# We use force here to remove the job even if it's running. This may not be the correct behaviour in all situations; unsure what the best way to deal with this is.
 				Unregister-ScheduledJob -Name $this.Name -Force
 			}
 			else {
-				Write-Verbose 'Job should exist. Checking settings.'
-				$ParamSplat = @{Name = $this.Name}
+				Write-Verbose 'Job exists. Checking settings.'
+				$ParamSplat = @{}
 				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK
 				if ($this.FilePath -and -not $this.ScriptBlock) {
 					Write-Verbose 'Job is a FilePath job.'
@@ -250,8 +250,8 @@ class cScheduledJob {
 					Write-Verbose 'Setting RunAs32.'
 					$ParamSplat.Add('RunAs32',$this.RunAs32)
 				}
-				if ($ParamSplat.Count -gt 1) {
-					Set-ScheduledJob @ParamSplat
+				if ($ParamSplat.Count -gt 0) {
+					Get-ScheduledJob -Name $this.Name | Set-ScheduledJob @ParamSplat
 				}
 			}
 		}
