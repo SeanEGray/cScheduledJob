@@ -193,6 +193,7 @@ class cScheduledJob {
 			}
 			else {
 				Write-Verbose 'Job should exist. Checking settings.'
+				$ParamSplat = @{Name = $this.Name}
 				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK
 				if ($this.FilePath -and -not $this.ScriptBlock) {
 					Write-Verbose 'Job is a FilePath job.'
@@ -224,30 +225,33 @@ class cScheduledJob {
 				}
 				if ($this.ArgumentList -and $this.ArgumentList -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
 					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
-					Write-Verbose 'ArgumentList does not match.'
-					## FIX ARGUMENTLIST
+					Write-Verbose 'Setting ArgumentList.'
+					$ParamSplat.Add('ArgumentList', $this.ArgumentList)
 				}
 				if ($this.Authentication -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
-					Write-Verbose 'Authentication does not match.'
-					## FIX AUTHENTICATION
+					Write-Verbose 'Setting Authentication method.'
+					$ParamSplat.Add('Authentication', $this.Authentication)
 				}
 				if ($this.Credential -and $this.Credential -ne $job.Credential) {
 					# NOT CONVINCED THAT THIS WILL WORK. FIXME.
-					Write-Verbose 'Credential does not match.'
-					## FIX CREDENTIAL
+					Write-Verbose 'Setting Credential.'
+					$ParamSplat.Add('Credential',$this.Credential)
 				}
 				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
 					# Check what happens when you compare scriptblocks.
-					Write-Verbose 'InitializationScript does not match.'
-					## FIX INITIALIZATIONSCRIPT
+					Write-Verbose 'Setting InitializationScript.'
+					$ParamSplat.Add('InitializationScript',$this.InitializationScript)
 				}
 				if ($this.MaxResultCount -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
-					Write-Verbose 'MaxResultCount does not match.'
-					## FIX MAXRESULTCOUNT
+					Write-Verbose 'Setting MaxResultCount.'
+					$ParamSplat.Add('MaxResultCount', $this.MaxResultCount)
 				}
 				if ($null -ne $this.RunAs32 -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
-					Write-Verbose 'RunAs32 does not match.'
-					## FIX RUNAS32
+					Write-Verbose 'Setting RunAs32.'
+					$ParamSplat.Add('RunAs32',$this.RunAs32)
+				}
+				if ($ParamSplat.Count -gt 1) {
+					Set-ScheduledJob @ParamSplat
 				}
 			}
 		}
