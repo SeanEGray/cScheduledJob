@@ -58,13 +58,6 @@ class cScheduledJob {
 	[DscProperty()]
 	[Bool] $RunAs32
 
-	# Sets the job to repeat after a given timespan.
-	[DscProperty()]
-	[TimeSpan] $RunEvery
-
-	# Runs the job immediately upon its creation.
-	[DscProperty()]
-	[Bool] $RunNow
 	<# 
 	# Specifies additional options for this job.
 	[DscProperty()]
