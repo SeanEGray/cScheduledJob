@@ -194,19 +194,19 @@ class cScheduledJob {
 			else {
 				Write-Verbose 'Job exists. Checking settings.'
 				$ParamSplat = @{}
-				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK
+				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK (and vice versa (does it handle this automatically?)
 				if ($this.FilePath -and -not $this.ScriptBlock) {
 					Write-Verbose 'Job is a FilePath job.'
 					if ($this.FilePath -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value) {
 						Write-Verbose 'FilePath does not match.'
-						## FIX FILEPATH
+						$ParamSplat.Add('FilePath', $this.FilePath)
 					}
 				}
 				elseif ($this.ScriptBlock -and -not $this.FilePath) {
 					Write-Verbose 'Job is a ScriptBlock job.'
 					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value) {
 						Write-Verbose 'ScriptBlock does not match.'
-						## FIX SCRIPTBLOCK
+						$ParamSplat.Add('ScriptBlock', $this.ScriptBlock)
 					}
 				}
 				else {
