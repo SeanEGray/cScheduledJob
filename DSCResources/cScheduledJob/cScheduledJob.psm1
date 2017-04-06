@@ -62,7 +62,7 @@ class cScheduledJob {
 	# Runs the job immediately upon its creation.
 	[DscProperty()]
 	[Bool] $RunNow
-
+	<# 
 	# Specifies additional options for this job.
 	[DscProperty()]
 	[cScheduledJobOption] $ScheduledJobOption
@@ -70,7 +70,7 @@ class cScheduledJob {
 	# Specifies one or more triggers for this job.
 	[DscProperty()]
 	[cJobTrigger[]] $Trigger
-
+	#>
 	[cScheduledJob] Get () {
 
 	}
