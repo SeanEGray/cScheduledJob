@@ -138,7 +138,37 @@ class cScheduledJob {
 					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
 					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
 				}
-
+				if ($null -ne $this.Enabled -and $this.Enabled -ne $job.Enabled) {
+					Write-Verbose 'Enabled does not match.'
+					return $false
+				}
+				if ($this.ArgumentList -and $this.ArgumentList -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
+					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
+					Write-Verbose 'ArgumentList does not match.'
+					return $false
+				}
+				if ($this.Authentication -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
+					Write-Verbose 'Authentication does not match.'
+					return $false
+				}
+				if ($this.Credential -and $this.Credential -ne $job.Credential) {
+					# NOT CONVINCED THAT THIS WILL WORK. FIXME.
+					Write-Verbose 'Credential does not match.'
+					return $false
+				}
+				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
+					# Check what happens when you compare scriptblocks.
+					Write-Verbose 'InitializationScript does not match.'
+					return $false
+				}
+				if ($this.MaxResultCount -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
+					Write-Verbose 'MaxResultCount does not match.'
+					return $false
+				}
+				if ($null -ne $this.RunAs32 -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
+					Write-Verbose 'RunAs32 does not match.'
+					return $false
+				}
 			}
 		}
 		else {
@@ -147,11 +177,9 @@ class cScheduledJob {
 				Write-Verbose 'Job should exist.'
 				return $false
 			}
-			else {
-				Write-Verbose 'Job should not exist.'
-				return $true
-			}
 		}
+		Write-Verbose 'No checks failed.'
+		return $true
 	}
 
 	[void] Set () {
