@@ -14,10 +14,12 @@ cScheduledJob represents a single scheduled job.
 Name of the scheduled job. Names must be unique on a single computer.
 #### Ensure (Mandatory)
 Indicates whether the scheduled job should be present or absent.
-#### FilePath (each cScheduledJob must have one FilePath OR one ScriptBlock)
+#### FilePath 
 Path to a PowerShell file for this job to run.
-#### ScriptBlock (each cScheduledJob must have one FilePath OR one ScriptBlock)
+Each cScheduledJob must have one FilePath OR one ScriptBlock.
+#### ScriptBlock 
 PowerShell scriptblock for this job to run.
+Each cScheduledJob must have one FilePath OR one ScriptBlock.
 #### Enabled
 Specifies whether this job is enabled or not.
 #### Argumentlist
