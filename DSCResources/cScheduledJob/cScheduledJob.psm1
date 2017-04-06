@@ -31,6 +31,9 @@ class cScheduledJob {
 	[DscProperty()]
 	[ScriptBlock] $ScriptBlock
 
+	# Specifies whether this job is enabled or not.
+	[Bool] $Enabled
+
 	# Hashtable containing arguments to pass to the script. <-- Is this correct?
 	[DscProperty()]
 	[Object[]] $ArgumentList
@@ -72,7 +75,36 @@ class cScheduledJob {
 	[cJobTrigger[]] $Trigger
 	#>
 	[cScheduledJob] Get () {
-
+		Write-Verbose "Retrieving Scheduled Job: $($this.Name)."
+		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
+		if ($job.Count -eq 1) {
+			Write-Verbose 'Job found. Checking whether it has a FilePath or a ScriptBlock.'
+			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.count -gt 0) {
+				Write-Verbose 'This is a FilePath job.'
+				$this.FilePath = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value
+			}
+			else {
+				Write-Verbose 'This is a ScriptBlock job.'
+				$this.ScriptBlock = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value
+			}
+			Write-Verbose 'Retrieving other properties.'
+			$this.Enabled = $job.Enabled
+			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.count -gt 0) {
+				$this.ArgumentList = InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
+			}
+			$this.Authentication = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value
+			$this.Credential = $job.Credential
+			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.count -gt 0) {
+				$this.InitializationScript = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value
+			}
+			$this.MaxResultCount = $job.ExecutionHistoryLength
+			$this.RunAs32 = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value
+		}
+		else {
+			Write-Verbose 'Job not found.'
+			$this.Ensure = [Ensure]::Absent
+		}
+		return $this
 	}
 
 	[bool] Test () {
