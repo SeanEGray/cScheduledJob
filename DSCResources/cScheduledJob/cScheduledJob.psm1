@@ -29,7 +29,7 @@ class cScheduledJob {
 	
 	# PowerShell scriptblock for this job to run.
 	[DscProperty()]
-	[ScriptBlock] $ScriptBlock
+	[String] $ScriptBlock
 
 	# Specifies whether this job is enabled or not.
 	[Bool] $Enabled
@@ -48,7 +48,7 @@ class cScheduledJob {
 	
 	# Script to initialize the session before running the primary script. If the initialization script generates any kind of error, the primary script will not be run.
 	[DscProperty()]
-	[ScriptBlock] $InitializationScript
+	[String] $InitializationScript
 
 	# The number of job results that are retained for this job.
 	[DscProperty()]
