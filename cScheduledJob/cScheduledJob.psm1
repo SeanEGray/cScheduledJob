@@ -36,7 +36,7 @@ class cScheduledJob {
 
 	# Hashtable containing arguments to pass to the script. <-- Is this correct?
 	[DscProperty()]
-	[Object[]] $ArgumentList
+	[Object[]] $Arguments
 
 	# Method used to authenticate credentials.
 	[DscProperty()]
@@ -87,7 +87,7 @@ class cScheduledJob {
 			Write-Verbose 'Checking whether job has an argument list.'
 			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.count -gt 0) {
 				Write-Verbose 'Job does have an argument list.'
-				$this.ArgumentList = InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
+				$this.Arguments = InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
 			}
 			Write-Verbose 'Checking authentication method.'
 			$this.Authentication = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value
@@ -142,7 +142,7 @@ class cScheduledJob {
 					Write-Verbose 'Enabled does not match.'
 					return $false
 				}
-				if ($this.ArgumentList -and $this.ArgumentList -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
+				if ($this.Arguments -and $this.Arguments -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
 					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
 					Write-Verbose 'ArgumentList does not match.'
 					return $false
@@ -223,10 +223,10 @@ class cScheduledJob {
 						Disable-ScheduledJob -Name $this.Name 
 					}
 				}
-				if ($this.ArgumentList -and $this.ArgumentList -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
+				if ($this.Arguments -and $this.Arguments -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
 					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
 					Write-Verbose 'Setting ArgumentList.'
-					$ParamSplat.Add('ArgumentList', $this.ArgumentList)
+					$ParamSplat.Add('ArgumentList', $this.Arguments)
 				}
 				if ($this.Authentication -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
 					Write-Verbose 'Setting Authentication method.'
@@ -270,8 +270,8 @@ class cScheduledJob {
 					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
 					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
 				}
-				if ($this.ArgumentList) {
-					$ParamSplat.Add('ArgumentList', $this.ArgumentList)
+				if ($this.Arguments) {
+					$ParamSplat.Add('ArgumentList', $this.Arguments)
 				}
 				if ($this.Authentication) {
 					$ParamSplat.Add('Authentication', $this.Authentication)

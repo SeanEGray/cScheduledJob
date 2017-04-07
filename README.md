@@ -22,14 +22,16 @@ PowerShell scriptblock for this job to run.
 Each cScheduledJob must have one FilePath OR one ScriptBlock.
 #### Enabled
 Specifies whether this job is enabled or not.
-#### Argumentlist
+#### Arguments
 Hashtable containing arguments to pass to the script. 
+This is equivalent to the Register-ScheduledJob's ArgumentList parameter, but ArgumentList is not a valid name for a DSC property.
 #### Authentication
 Method used to authenticate credentials.
 #### Credential
 Credential to run the job under.
 #### InitializationScript
-Script to initialize the session before running the primary script. If the initialization script generates any kind of error, the primary script will not be run.
+Script to initialize the session before running the primary script. 
+If the initialization script generates any kind of error, the primary script will not be run.
 #### MaxResultCount
 The number of job results that are retained for this job.
 #### RunAs32

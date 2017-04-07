@@ -8,7 +8,7 @@ Describe 'Get' {
 	It 'Correctly retrieve ScriptBlock job' {
 
 	}
-	It 'Correctly retrieve job with ArgumentList' {
+	It 'Correctly retrieve job with Arguments' {
 
 	}
 	It 'Correctly retrieve job with InitializationScript' {
@@ -38,7 +38,7 @@ Describe 'Test' {
 	It 'Return false for Enabled not matching' {
 
 	}
-	It 'Return false for ArgumentList not matching' {
+	It 'Return false for Arguments not matching' {
 
 	}
 	It 'Return false for Credential not matching' {
@@ -95,7 +95,7 @@ Describe 'Set' {
 	It 'Throw if neither FilePath nor ScriptBlock are specified' {
 
 	}
-	It 'Create job with ArgumentList' {
+	It 'Create job with Arguments' {
 
 	}
 	It 'Create job with Authentication' {
@@ -137,7 +137,7 @@ Describe 'Set' {
 	It 'Disable job' {
 
 	}
-	It 'Set ArgumentList' {
+	It 'Set Arguments' {
 
 	}
 	It 'Set Authentication' {
