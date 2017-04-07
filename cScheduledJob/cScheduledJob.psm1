@@ -36,7 +36,7 @@ class cScheduledJob {
 
 	# Hashtable containing arguments to pass to the script. <-- Is this correct?
 	[DscProperty()]
-	[Object[]] $Arguments
+	[Hashtable] $Arguments
 
 	# Method used to authenticate credentials.
 	[DscProperty()]
