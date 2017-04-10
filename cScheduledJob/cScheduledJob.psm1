@@ -65,42 +65,55 @@ class cScheduledJob {
 	[DscProperty()]
 	[Bool] $RunAs32
 
+	# Specifies whether to continue the job if the computer switches to battery power.
 	[DscProperty()]
 	[bool] $ContinueIfGoingOnBattery
 
+	# Start the job only when it is triggered. Users cannot start the job manually.
 	[DscProperty()]
 	[bool] $DoNotAllowDemandStart
 
+	# Do not display the job in Task Scheduler.
 	[DscProperty()]
 	[bool] $HideInTaskScheduler
 
+	# Specifies how long the computer must be idle before the job starts.
 	[DscProperty()]
 	[String] $IdleDuration
 
+	# Specifies how long the scheduled job waits.
 	[DscProperty()]
 	[String] $IdleTimeout
 
+	# Determines how the system responds to a request to start an instance of the job while another instances is running.
 	[DscProperty()]
 	[MultipleInstancePolicy] $MultipleInstancePolicy
 
+	# Runs the job only when network connections are available.
 	[DscProperty()]
 	[bool] $RequireNetwork
 
+	# Restarts a job when the computer becomes idle.
 	[DscProperty()]
 	[bool] $RestartOnIdleResume
 
+	# Run the job as an administrator.
 	[DscProperty()]
 	[bool] $RunElevated
 
+	# Only start the job if the computer has been idle for the period specified in IdleDuration.
 	[DscProperty()]
 	[bool] $StartIfIdle
 	
+	# Allow the job to start if the computer is running on battery.
 	[DscProperty()]
 	[bool] $StartIfOnBattery
 
+	# Suspend the running job if the computer becomes active.
 	[DscProperty()]
 	[bool] $StopIfGoingOffIdle
 
+	# Wake the computer to run the job.
 	[DscProperty()]
 	[bool] $WakeToRun
 
