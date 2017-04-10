@@ -238,7 +238,6 @@ class cScheduledJob {
 					return $false
 				}
 				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
-					# Check what happens when you compare scriptblocks.
 					Write-Verbose 'InitializationScript does not match.'
 					return $false
 				}
@@ -248,6 +247,58 @@ class cScheduledJob {
 				}
 				if ($null -ne $this.RunAs32 -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
 					Write-Verbose 'RunAs32 does not match.'
+					return $false
+				}
+				if ($null -ne $this.ContinueIfGoingOnBattery -and $this.ContinueIfGoingOnBattery -ne -not $job.Options.StopIfGoingOnBatteries) {
+					Write-Verbose 'ContinueIfGoingOnBattery does not match.'
+					return $false
+				}
+				if ($null -ne $this.DoNotAllowDemandStart -and $this.DoNotAllowDemandStart -ne $job.Options.DoNotAllowDemandStart) {
+					Write-Verbose 'DoNotAllowDemandStart does not match.'
+					return $false
+				}
+				if ($null -ne $this.HideInTaskScheduler -and $this.HideInTaskScheduler -ne -not $job.Options.ShowInTaskScheduler) {
+					Write-Verbose 'HideInTaskScheduler does not match.'
+					return $false
+				}
+				if ($this.IdleDuration -and $this.IdleDuration -ne $job.Options.IdleDuration.ToString()) {
+					Write-Verbose 'IdleDuration does not match.'
+					return $false
+				}
+				if ($this.IdleTimeout -and $this.IdleTimeout -ne $job.Options.IdleTimeout.ToString()) {
+					Write-Verbose 'IdleTimeout does not match.'
+					return $false
+				}
+				if ($this.MultipleInstancePolicy -and $this.MultipleInstancePolicy -ne $job.Options.MultipleInstancePolicy) {
+					Write-Verbose 'MultipleInstancePolicy does not match.'
+					return $false
+				}
+				if ($null -ne $this.RequireNetwork -and $this.RequireNetwork -ne -not $job.Options.RunWithoutNetwork) {
+					Write-Verbose 'RequireNetwork does not match.'
+					return $false
+				}
+				if ($null -ne $this.RestartOnIdleResume -and $this.RestartOnIdleResume -ne $job.Options.RestartOnIdleResume) {
+					Write-Verbose 'RestartOnIdleResume does not match.'
+					return $false
+				}
+				if ($null -ne $this.RunElevated -and $this.RunElevated -ne $job.Options.RunElevated) {
+					Write-Verbose 'RunElevated does not match.'
+					return $false
+				}
+				if ($null -ne $this.StartIfIdle -and $this.StartIfIdle -ne -not $job.Options.StartIfNotIdle) {
+					Write-Verbose 'StartIfIdle does not match.'
+					return $false
+				}
+				if ($null -ne $this.StartIfOnBattery -and $this.StartIfOnBattery -ne $job.Options.StartIfOnBatteries) {
+					Write-Verbose 'StartIfOnBattery does not match.'
+					return $false
+				}
+				if ($null -ne $this.StopIfGoingOffIdle -and $this.StopIfGoingOffIdle -ne $job.Options.StopIfGoingOffIdle) {
+					Write-Verbose 'StopIfGoingOffIdle does not match.'
+					return $false
+				}
+				if ($null -ne $this.WakeToRun -and $this.WakeToRun -ne $job.Options.WakeToRun) {
+					Write-Verbose 'WakeToRun does not match.'
 					return $false
 				}
 			}
