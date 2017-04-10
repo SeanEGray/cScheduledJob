@@ -325,6 +325,7 @@ class cScheduledJob {
 			}
 			else {
 				Write-Verbose 'Job exists. Checking settings.'
+				$OptionSplat = @{}
 				$ParamSplat = @{}
 				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK (and vice versa (does it handle this automatically?)
 				if ($this.FilePath -and -not $this.ScriptBlock) {
@@ -370,7 +371,6 @@ class cScheduledJob {
 					$ParamSplat.Add('Credential',$this.Credential)
 				}
 				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
-					# Check what happens when you compare scriptblocks.
 					Write-Verbose 'Setting InitializationScript.'
 					$ParamSplat.Add('InitializationScript',$this.InitializationScript)
 				}
@@ -382,6 +382,48 @@ class cScheduledJob {
 					Write-Verbose 'Setting RunAs32.'
 					$ParamSplat.Add('RunAs32',$this.RunAs32)
 				}
+									if ($null -ne $this.ContinueIfGoingOnBattery) {
+					$OptionSplat.Add('ContinueIfGoingOnBattery', $this.ContinueIfGoingOnBattery)
+				}
+				if ($null -ne $this.DoNotAllowDemandStart) {
+					$OptionSplat.Add('DoNotAllowDemandStart', $this.DoNotAllowDemandStart)
+				}
+				if ($null -ne $this.HideInTaskScheduler) {
+					$OptionSplat.Add('HideInTaskScheduler', $this.HideInTaskScheduler)
+				}
+				if ($this.IdleDuration) {
+					$OptionSplat.Add('IdleDuration', $this.IdleDuration)
+				}
+				if ($this.IdleTimeout) {
+					$OptionSplat.Add('IdleTimeout', $this.IdleTimeout)
+				}
+				if ($this.MultipleInstancePolicy) {
+					$OptionSplat.Add('MultipleInstancePolicy', $this.MultipleInstancePolicy)
+				}
+				if ($null -ne $this.WakeToRun) {
+					$OptionSplat.Add('WakeToRun', $this.WakeToRun)
+				}
+				if ($null -ne $this.RequireNetwork) {
+					$OptionSplat.Add('RequireNetwork', $this.RequireNetwork)
+				}
+				if ($null -ne $this.RestartOnIdleResume) {
+					$OptionSplat.Add('RestartOnIdleResume', $this.RestartOnIdleResume)
+				}
+				if ($null -ne $this.RunElevated) {
+					$OptionSplat.Add('RunElevated', $this.RunElevated)
+				}
+				if ($null -ne $this.StartIfIdle) {
+					$OptionSplat.Add('StartIfIdle', $this.StartIfIdle)
+				}
+				if ($null -ne $this.StartIfOnBattery) {
+					$OptionSplat.Add('StartIfOnBattery', $this.StartIfOnBattery)
+				}
+				if ($null -ne $this.StopIfGoingOffIdle) {
+					$OptionSplat.Add('StopIfGoingOffIdle', $this.StopIfGoingOffIdle)
+				}
+				if ($OptionSplat.Count -gt 0) {
+					$ParamSplat.Add('ScheduledJobOption', (New-ScheduledJobOption @OptionSplat))
+				}
 				if ($ParamSplat.Count -gt 0) {
 					Get-ScheduledJob -Name $this.Name | Set-ScheduledJob @ParamSplat
 				}
@@ -392,6 +434,7 @@ class cScheduledJob {
 			if ($this.Ensure -eq [Ensure]::Present) {
 				Write-Verbose 'Creating job.'
 				$ParamSplat = @{Name = $this.Name}
+				$OptionSplat = @{}
 				if ($this.FilePath -and -not $this.ScriptBlock) {
 					$ParamSplat.Add('FilePath', $this.FilePath)
 				}
@@ -419,6 +462,48 @@ class cScheduledJob {
 				}
 				if ($null -ne $this.RunAs32) {
 					$ParamSplat.Add('RunAs32', $this.RunAs32)
+				}
+				if ($null -ne $this.ContinueIfGoingOnBattery) {
+					$OptionSplat.Add('ContinueIfGoingOnBattery', $this.ContinueIfGoingOnBattery)
+				}
+				if ($null -ne $this.DoNotAllowDemandStart) {
+					$OptionSplat.Add('DoNotAllowDemandStart', $this.DoNotAllowDemandStart)
+				}
+				if ($null -ne $this.HideInTaskScheduler) {
+					$OptionSplat.Add('HideInTaskScheduler', $this.HideInTaskScheduler)
+				}
+				if ($this.IdleDuration) {
+					$OptionSplat.Add('IdleDuration', $this.IdleDuration)
+				}
+				if ($this.IdleTimeout) {
+					$OptionSplat.Add('IdleTimeout', $this.IdleTimeout)
+				}
+				if ($this.MultipleInstancePolicy) {
+					$OptionSplat.Add('MultipleInstancePolicy', $this.MultipleInstancePolicy)
+				}
+				if ($null -ne $this.WakeToRun) {
+					$OptionSplat.Add('WakeToRun', $this.WakeToRun)
+				}
+				if ($null -ne $this.RequireNetwork) {
+					$OptionSplat.Add('RequireNetwork', $this.RequireNetwork)
+				}
+				if ($null -ne $this.RestartOnIdleResume) {
+					$OptionSplat.Add('RestartOnIdleResume', $this.RestartOnIdleResume)
+				}
+				if ($null -ne $this.RunElevated) {
+					$OptionSplat.Add('RunElevated', $this.RunElevated)
+				}
+				if ($null -ne $this.StartIfIdle) {
+					$OptionSplat.Add('StartIfIdle', $this.StartIfIdle)
+				}
+				if ($null -ne $this.StartIfOnBattery) {
+					$OptionSplat.Add('StartIfOnBattery', $this.StartIfOnBattery)
+				}
+				if ($null -ne $this.StopIfGoingOffIdle) {
+					$OptionSplat.Add('StopIfGoingOffIdle', $this.StopIfGoingOffIdle)
+				}
+				if ($OptionSplat.Count -gt 0) {
+					$ParamSplat.Add('ScheduledJobOption', (New-ScheduledJobOption @OptionSplat))
 				}
 				Register-ScheduledJob @ParamSplat 
 
