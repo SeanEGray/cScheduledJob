@@ -36,7 +36,31 @@ If the initialization script generates any kind of error, the primary script wil
 The number of job results that are retained for this job.
 #### RunAs32
 Specifies whether to run this job in a 32-bit process.
-#### ScheduledJobOption
-Specifies additional options for this job.
+### ContinueIfGoingOnBattery
+Specifies whether to continue the job if the computer switches to battery power.
+### DoNotAllowDemandStart
+Start the job only when it is triggered. Users cannot start the job manually.
+### HideInTaskScheduler
+Do not display the job in Task Scheduler.
+### IdleDuration
+Specifies how long the computer must be idle before the job starts.
+### IdleTimeout
+Specifies how long the scheduled job waits.
+### MultipleInstancePolicy
+Determines how the system responds to a request to start an instance of the job while another instances is running.
+### RequireNetwork
+Runs the job only when network connections are available.
+### RestartOnIdleResume
+Restarts a job when the computer becomes idle.
+### RunElevated
+Run the job as an administrator.
+### StartIfIdle
+Only start the job if the computer has been idle for the period specified in IdleDuration.
+### StartIfOnBattery
+Allow the job to start if the computer is running on battery.
+### StopIfGoingOffIdle
+Suspend the running job if the computer becomes active.
+### WakeToRun
+Wake the computer to run the job.
 #### Trigger
 Specifies one or more triggers for this job.
