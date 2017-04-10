@@ -382,7 +382,10 @@ class cScheduledJob {
 					Write-Verbose 'Setting RunAs32.'
 					$ParamSplat.Add('RunAs32',$this.RunAs32)
 				}
-									if ($null -ne $this.ContinueIfGoingOnBattery) {
+				# NB: If we set any options, we must set ALL SPECIFIED options, to avoid overwriting correct settings
+				# This is why we just overwrite options automatically in this case.
+				# Could probably tidy this up with a helper function.
+				if ($null -ne $this.ContinueIfGoingOnBattery) {
 					$OptionSplat.Add('ContinueIfGoingOnBattery', $this.ContinueIfGoingOnBattery)
 				}
 				if ($null -ne $this.DoNotAllowDemandStart) {
