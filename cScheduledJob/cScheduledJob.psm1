@@ -13,6 +13,13 @@ enum Authentication {
 	Kerberos
 }
 
+enum MultipleInstancePolicy {
+	IgnoreNew
+	Parallel
+	Queue
+	StopExisting
+}
+
 [DscResource()]
 class cScheduledJob {
 	# Name of the scheduled job. Names must be unique on a single computer.
@@ -58,11 +65,46 @@ class cScheduledJob {
 	[DscProperty()]
 	[Bool] $RunAs32
 
-	<# 
-	# Specifies additional options for this job.
 	[DscProperty()]
-	[cScheduledJobOption] $ScheduledJobOption
+	[bool] $ContinueIfGoingOnBattery
 
+	[DscProperty()]
+	[bool] $DoNotAllowDemandStart
+
+	[DscProperty()]
+	[bool] $HideInTaskScheduler
+	<#
+	[DscProperty()]
+	[TimeSpan] $IdleDuration,
+
+	[DscProperty()]
+	[TimeSpan] $IdleTimeout,
+	#>
+	[DscProperty()]
+	[MultipleInstancePolicy] $MultipleInstancePolicy
+
+	[DscProperty()]
+	[bool] $RequireNetwork
+
+	[DscProperty()]
+	[bool] $RestartOnIdleResume
+
+	[DscProperty()]
+	[bool] $RunElevated
+
+	[DscProperty()]
+	[bool] $StartIfIdle
+
+	[DscProperty()]
+	[bool] $StartIfOnBattery
+
+	[DscProperty()]
+	[bool] $StopIfGoingOffIdle
+
+	[DscProperty()]
+	[bool] $WakeToRun
+
+	<# 
 	# Specifies one or more triggers for this job.
 	[DscProperty()]
 	[cJobTrigger[]] $Trigger
@@ -299,3 +341,4 @@ class cScheduledJob {
 	}
 
 }
+
