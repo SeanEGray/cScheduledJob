@@ -142,7 +142,7 @@ class cScheduledJob {
 			Write-Verbose 'Checking whether job has an argument list.'
 			if ($job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.count -gt 0) {
 				Write-Verbose 'Job does have an argument list.'
-				$this.Arguments = InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
+				$this.Arguments = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
 			}
 			Write-Verbose 'Checking authentication method.'
 			$this.Authentication = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value
