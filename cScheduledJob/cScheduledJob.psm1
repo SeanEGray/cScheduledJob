@@ -73,13 +73,13 @@ class cScheduledJob {
 
 	[DscProperty()]
 	[bool] $HideInTaskScheduler
-	<#
-	[DscProperty()]
-	[TimeSpan] $IdleDuration,
 
 	[DscProperty()]
-	[TimeSpan] $IdleTimeout,
-	#>
+	[String] $IdleDuration
+
+	[DscProperty()]
+	[String] $IdleTimeout
+
 	[DscProperty()]
 	[MultipleInstancePolicy] $MultipleInstancePolicy
 
@@ -94,7 +94,7 @@ class cScheduledJob {
 
 	[DscProperty()]
 	[bool] $StartIfIdle
-
+	
 	[DscProperty()]
 	[bool] $StartIfOnBattery
 
@@ -144,6 +144,32 @@ class cScheduledJob {
 			$this.MaxResultCount = $job.ExecutionHistoryLength
 			Write-Verbose 'Checking whether job runs as a 32-bit process.'
 			$this.RunAs32 = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value
+			Write-Verbose 'Checking whether job will run on battery.'
+			$this.StartIfOnBattery = $job.Options.StartIfOnBatteries
+			Write-Verbose 'Checking whether job will continue when switching to battery.'
+			$this.ContinueIfGoingOnBattery = -not $job.Options.StopIfGoingOnBatteries
+			Write-Verbose 'Checking whether job will wake the computer to run.'
+			$this.WakeToRun = $job.Options.WakeToRun
+			Write-Verbose 'Checking whether job will wait for computer to be idle before starting.'
+			$this.StartIfIdle = -not $job.Options.StartIfNotIdle
+			Write-Verbose 'Checking whether job will stop if computer stops being idle.'
+			$this.StopIfGoingOffIdle = $job.Options.StopIfGoingOffIdle
+			Write-Verbose 'Checking whether job will restart when the computer is idle again.'
+			$this.RestartOnIdleResume = $job.Options.RestartOnIdleResume
+			Write-Verbose 'Checking how long computer must idle before starting job.'
+			$this.IdleDuration = $job.Options.IdleDuration.ToString()
+			Write-Verbose 'Checking how long computer will wait to become idle.'
+			$this.IdleTimeout = $job.Options.IdleTimeout.ToString()
+			Write-Verbose 'Checking whether this job should be hidden in task scheduler.'
+			$this.HideInTaskScheduler = -not $job.Options.ShowInTaskScheduler
+			Write-Verbose 'Checking whether this job should run elevated.'
+			$this.RunElevated = $job.Options.RunElevated
+			Write-Verbose 'Checking whether this job can run without network access.'
+			$this.RequireNetwork = -not $job.Options.RunWithoutNetwork
+			Write-Verbose 'Checking whether this job can run on demand.'
+			$this.DoNotAllowDemandStart = $job.Options.DoNotAllowDemandStart
+			Write-Verbose "Checking this job's multiple instance policy."
+			$this.MultipleInstancePolicy = $job.Options.MultipleInstancePolicy
 		}
 		else {
 			Write-Verbose 'Job not found.'
