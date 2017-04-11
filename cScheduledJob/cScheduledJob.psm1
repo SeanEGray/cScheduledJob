@@ -195,20 +195,20 @@ class cScheduledJob {
 		Write-Verbose "Testing for Scheduled Job: $($this.Name)."
 		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
 		if ($job.Count -eq 1) {
-			if ($this.Ensure -eq [Ensure]::Absent) {
+			if ([Ensure]::Absent) {
 				Write-Verbose 'Job should not exist.'
 				return $false
 			}
 			else {
 				Write-Verbose 'Job should exist. Checking settings.'
-				if ($this.FilePath -and -not $this.ScriptBlock) {
+				if ($PSBoundParameters.ContainsKey('FilePath') -and -not $PSBoundParameters.ContainsKey('ScriptBlock')) {
 					Write-Verbose 'Job is a FilePath job.'
 					if ($this.FilePath -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value) {
 						Write-Verbose 'FilePath does not match.'
 						return $false
 					}
 				}
-				elseif ($this.ScriptBlock -and -not $this.FilePath) {
+				elseif ($PSBoundParameters.ContainsKey('ScriptBlock') -and -not $PSBoundParameters.ContainsKey('FilePath')) {
 					Write-Verbose 'Job is a ScriptBlock job.'
 					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value) {
 						Write-Verbose 'ScriptBlock does not match.'
@@ -219,85 +219,85 @@ class cScheduledJob {
 					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
 					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
 				}
-				if ($null -ne $this.Enabled -and $this.Enabled -ne $job.Enabled) {
+				if ($PSBoundParameters.ContainsKey('Enabled') -and $this.Enabled -ne $job.Enabled) {
 					Write-Verbose 'Enabled does not match.'
 					return $false
 				}
-				if ($this.Arguments -and $this.Arguments -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
+				if ($PSBoundParameters.ContainsKey('Arguments') -and $this.Arguments -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
 					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
 					Write-Verbose 'ArgumentList does not match.'
 					return $false
 				}
-				if ($this.Authentication -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
+				if ($PSBoundParameters.ContainsKey('Authentication') -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
 					Write-Verbose 'Authentication does not match.'
 					return $false
 				}
-				if ($this.Credential -and $this.Credential -ne $job.Credential) {
+				if ($PSBoundParameters.ContainsKey('Credential') -and $this.Credential -ne $job.Credential) {
 					# NOT CONVINCED THAT THIS WILL WORK. FIXME.
 					Write-Verbose 'Credential does not match.'
 					return $false
 				}
-				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
+				if ($PSBoundParameters.ContainsKey('InitializationScript') -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
 					Write-Verbose 'InitializationScript does not match.'
 					return $false
 				}
-				if ($this.MaxResultCount -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
+				if ($PSBoundParameters.ContainsKey('MaxResultCount') -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
 					Write-Verbose 'MaxResultCount does not match.'
 					return $false
 				}
-				if ($null -ne $this.RunAs32 -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
+				if ($PSBoundParameters.ContainsKey('RunAs32') -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
 					Write-Verbose 'RunAs32 does not match.'
 					return $false
 				}
-				if ($null -ne $this.ContinueIfGoingOnBattery -and $this.ContinueIfGoingOnBattery -ne -not $job.Options.StopIfGoingOnBatteries) {
+				if ($PSBoundParameters.ContainsKey('ContinueIfGoingOnBattery') -and $this.ContinueIfGoingOnBattery -ne -not $job.Options.StopIfGoingOnBatteries) {
 					Write-Verbose 'ContinueIfGoingOnBattery does not match.'
 					return $false
 				}
-				if ($null -ne $this.DoNotAllowDemandStart -and $this.DoNotAllowDemandStart -ne $job.Options.DoNotAllowDemandStart) {
+				if ($PSBoundParameters.ContainsKey('DoNotAllowDemandStart') -and $this.DoNotAllowDemandStart -ne $job.Options.DoNotAllowDemandStart) {
 					Write-Verbose 'DoNotAllowDemandStart does not match.'
 					return $false
 				}
-				if ($null -ne $this.HideInTaskScheduler -and $this.HideInTaskScheduler -ne -not $job.Options.ShowInTaskScheduler) {
+				if ($PSBoundParameters.ContainsKey('HideInTaskScheduler') -and $this.HideInTaskScheduler -ne -not $job.Options.ShowInTaskScheduler) {
 					Write-Verbose 'HideInTaskScheduler does not match.'
 					return $false
 				}
-				if ($this.IdleDuration -and $this.IdleDuration -ne $job.Options.IdleDuration.ToString()) {
+				if ($PSBoundParameters.ContainsKey('IdleDuration') -and $this.IdleDuration -ne $job.Options.IdleDuration.ToString()) {
 					Write-Verbose 'IdleDuration does not match.'
 					return $false
 				}
-				if ($this.IdleTimeout -and $this.IdleTimeout -ne $job.Options.IdleTimeout.ToString()) {
+				if ($PSBoundParameters.ContainsKey('IdleTimeout') -and $this.IdleTimeout -ne $job.Options.IdleTimeout.ToString()) {
 					Write-Verbose 'IdleTimeout does not match.'
 					return $false
 				}
-				if ($this.MultipleInstancePolicy -and $this.MultipleInstancePolicy -ne $job.Options.MultipleInstancePolicy) {
+				if ($PSBoundParameters.ContainsKey('MultipleInstancePolicy') -and $this.MultipleInstancePolicy -ne $job.Options.MultipleInstancePolicy) {
 					Write-Verbose 'MultipleInstancePolicy does not match.'
 					return $false
 				}
-				if ($null -ne $this.RequireNetwork -and $this.RequireNetwork -ne -not $job.Options.RunWithoutNetwork) {
+				if ($PSBoundParameters.ContainsKey('RequireNetwork') -and $this.RequireNetwork -ne -not $job.Options.RunWithoutNetwork) {
 					Write-Verbose 'RequireNetwork does not match.'
 					return $false
 				}
-				if ($null -ne $this.RestartOnIdleResume -and $this.RestartOnIdleResume -ne $job.Options.RestartOnIdleResume) {
+				if ($PSBoundParameters.ContainsKey('RestartOnIdleResume') -and $this.RestartOnIdleResume -ne $job.Options.RestartOnIdleResume) {
 					Write-Verbose 'RestartOnIdleResume does not match.'
 					return $false
 				}
-				if ($null -ne $this.RunElevated -and $this.RunElevated -ne $job.Options.RunElevated) {
+				if ($PSBoundParameters.ContainsKey('RunElevated') -and $this.RunElevated -ne $job.Options.RunElevated) {
 					Write-Verbose 'RunElevated does not match.'
 					return $false
 				}
-				if ($null -ne $this.StartIfIdle -and $this.StartIfIdle -ne -not $job.Options.StartIfNotIdle) {
+				if ($PSBoundParameters.ContainsKey('StartIfIdle') -and $this.StartIfIdle -ne -not $job.Options.StartIfNotIdle) {
 					Write-Verbose 'StartIfIdle does not match.'
 					return $false
 				}
-				if ($null -ne $this.StartIfOnBattery -and $this.StartIfOnBattery -ne $job.Options.StartIfOnBatteries) {
+				if ($PSBoundParameters.ContainsKey('StartIfOnBattery') -and $this.StartIfOnBattery -ne $job.Options.StartIfOnBatteries) {
 					Write-Verbose 'StartIfOnBattery does not match.'
 					return $false
 				}
-				if ($null -ne $this.StopIfGoingOffIdle -and $this.StopIfGoingOffIdle -ne $job.Options.StopIfGoingOffIdle) {
+				if ($PSBoundParameters.ContainsKey('StopIfGoingOffIdle') -and $this.StopIfGoingOffIdle -ne $job.Options.StopIfGoingOffIdle) {
 					Write-Verbose 'StopIfGoingOffIdle does not match.'
 					return $false
 				}
-				if ($null -ne $this.WakeToRun -and $this.WakeToRun -ne $job.Options.WakeToRun) {
+				if ($PSBoundParameters.ContainsKey('WakeToRun') -and $this.WakeToRun -ne $job.Options.WakeToRun) {
 					Write-Verbose 'WakeToRun does not match.'
 					return $false
 				}
