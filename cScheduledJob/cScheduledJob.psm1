@@ -328,14 +328,14 @@ class cScheduledJob {
 				$OptionSplat = @{}
 				$ParamSplat = @{}
 				## DEAL WITH CHANGING FROM FILEPATH TO SCRIPTBLOCK (and vice versa (does it handle this automatically?)
-				if ($this.FilePath -and -not $this.ScriptBlock) {
+				if ($PSBoundParameters.ContainsKey('FilePath') -and -not $PSBoundParameters.ContainsKey('ScriptBlock')) {
 					Write-Verbose 'Job is a FilePath job.'
 					if ($this.FilePath -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'FilePath'}.value) {
 						Write-Verbose 'FilePath does not match.'
 						$ParamSplat.Add('FilePath', $this.FilePath)
 					}
 				}
-				elseif ($this.ScriptBlock -and -not $this.FilePath) {
+				elseif ($PSBoundParameters.ContainsKey('ScriptBlock') -and -not $PSBoundParameters.ContainsKey('FilePath')) {
 					Write-Verbose 'Job is a ScriptBlock job.'
 					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value.tostring()) {
 						Write-Verbose 'ScriptBlock does not match.'
@@ -346,7 +346,7 @@ class cScheduledJob {
 					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
 					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
 				}
-				if ($null -ne $this.Enabled -and $this.Enabled -ne $job.Enabled) {
+				if ($PSBoundParameters.ContainsKey('Enabled') -and $this.Enabled -ne $job.Enabled) {
 					if ($this.Enabled) {
 						Write-Verbose 'Enabling job.'
 						Enable-ScheduledJob -Name $this.Name
@@ -356,72 +356,72 @@ class cScheduledJob {
 						Disable-ScheduledJob -Name $this.Name 
 					}
 				}
-				if ($this.Arguments -and $this.Arguments -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
+				if ($PSBoundParameters.ContainsKey('Arguments') -and $this.Arguments -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value) {
 					# THIS BLATANTLY ISN'T GOING TO WORK. FIXME.
 					Write-Verbose 'Setting ArgumentList.'
 					$ParamSplat.Add('ArgumentList', $this.Arguments)
 				}
-				if ($this.Authentication -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
+				if ($PSBoundParameters.ContainsKey('Authentication') -and $this.Authentication -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value) {
 					Write-Verbose 'Setting Authentication method.'
 					$ParamSplat.Add('Authentication', $this.Authentication)
 				}
-				if ($this.Credential -and $this.Credential -ne $job.Credential) {
+				if ($PSBoundParameters.ContainsKey('Credential') -and $this.Credential -ne $job.Credential) {
 					# NOT CONVINCED THAT THIS WILL WORK. FIXME.
 					Write-Verbose 'Setting Credential.'
 					$ParamSplat.Add('Credential',$this.Credential)
 				}
-				if ($this.InitializationScript -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
+				if ($PSBoundParameters.ContainsKey('InitializationScript') -and $this.InitializationScript -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'InitializationScript'}.value) {
 					Write-Verbose 'Setting InitializationScript.'
 					$ParamSplat.Add('InitializationScript',$this.InitializationScript)
 				}
-				if ($this.MaxResultCount -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
+				if ($PSBoundParameters.ContainsKey('MaxResultCount') -and $this.MaxResultCount -ne $job.ExecutionHistoryLength) {
 					Write-Verbose 'Setting MaxResultCount.'
 					$ParamSplat.Add('MaxResultCount', $this.MaxResultCount)
 				}
-				if ($null -ne $this.RunAs32 -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
+				if ($PSBoundParameters.ContainsKey('RunAs32') -and $this.RunAs32 -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'RunAs32'}.value) {
 					Write-Verbose 'Setting RunAs32.'
 					$ParamSplat.Add('RunAs32',$this.RunAs32)
 				}
 				# NB: If we set any options, we must set ALL SPECIFIED options, to avoid overwriting correct settings
 				# This is why we just overwrite options automatically in this case.
 				# Could probably tidy this up with a helper function.
-				if ($null -ne $this.ContinueIfGoingOnBattery) {
+				if ($PSBoundParameters.ContainsKey('ContinueIfGoingOnBattery')) {
 					$OptionSplat.Add('ContinueIfGoingOnBattery', $this.ContinueIfGoingOnBattery)
 				}
-				if ($null -ne $this.DoNotAllowDemandStart) {
+				if ($PSBoundParameters.ContainsKey('DoNotAllowDemandStart')) {
 					$OptionSplat.Add('DoNotAllowDemandStart', $this.DoNotAllowDemandStart)
 				}
-				if ($null -ne $this.HideInTaskScheduler) {
+				if ($PSBoundParameters.ContainsKey('HideInTaskScheduler')) {
 					$OptionSplat.Add('HideInTaskScheduler', $this.HideInTaskScheduler)
 				}
-				if ($this.IdleDuration) {
+				if ($PSBoundParameters.ContainsKey('IdleDuration')) {
 					$OptionSplat.Add('IdleDuration', $this.IdleDuration)
 				}
-				if ($this.IdleTimeout) {
+				if ($PSBoundParameters.ContainsKey('IdleTimeout')) {
 					$OptionSplat.Add('IdleTimeout', $this.IdleTimeout)
 				}
-				if ($this.MultipleInstancePolicy) {
+				if ($PSBoundParameters.ContainsKey('MultipleInstancePolicy')) {
 					$OptionSplat.Add('MultipleInstancePolicy', $this.MultipleInstancePolicy)
 				}
-				if ($null -ne $this.WakeToRun) {
+				if ($PSBoundParameters.ContainsKey('WakeToRun')) {
 					$OptionSplat.Add('WakeToRun', $this.WakeToRun)
 				}
-				if ($null -ne $this.RequireNetwork) {
+				if ($PSBoundParameters.ContainsKey('RequireNetwork')) {
 					$OptionSplat.Add('RequireNetwork', $this.RequireNetwork)
 				}
-				if ($null -ne $this.RestartOnIdleResume) {
+				if ($PSBoundParameters.ContainsKey('RestartOnIdleResume')) {
 					$OptionSplat.Add('RestartOnIdleResume', $this.RestartOnIdleResume)
 				}
-				if ($null -ne $this.RunElevated) {
+				if ($PSBoundParameters.ContainsKey('RunElevated')) {
 					$OptionSplat.Add('RunElevated', $this.RunElevated)
 				}
-				if ($null -ne $this.StartIfIdle) {
+				if ($PSBoundParameters.ContainsKey('StartIfIdle')) {
 					$OptionSplat.Add('StartIfIdle', $this.StartIfIdle)
 				}
-				if ($null -ne $this.StartIfOnBattery) {
+				if ($PSBoundParameters.ContainsKey('StartIfOnBattery')) {
 					$OptionSplat.Add('StartIfOnBattery', $this.StartIfOnBattery)
 				}
-				if ($null -ne $this.StopIfGoingOffIdle) {
+				if ($PSBoundParameters.ContainsKey('StopIfGoingOffIdle')) {
 					$OptionSplat.Add('StopIfGoingOffIdle', $this.StopIfGoingOffIdle)
 				}
 				if ($OptionSplat.Count -gt 0) {
@@ -438,89 +438,89 @@ class cScheduledJob {
 				Write-Verbose 'Creating job.'
 				$ParamSplat = @{Name = $this.Name}
 				$OptionSplat = @{}
-				if ($this.FilePath -and -not $this.ScriptBlock) {
+				if ($PSBoundParameters.ContainsKey('FilePath') -and -not $PSBoundParameters.ContainsKey('ScriptBlock')) {
 					$ParamSplat.Add('FilePath', $this.FilePath)
 				}
-				elseif ($this.ScriptBlock -and -not $this.FilePath) {
+				elseif ($PSBoundParameters.ContainsKey('ScriptBlock') -and -not $PSBoundParameters.ContainsKey('FilePath')) {
 					$ParamSplat.Add('ScriptBlock', [scriptblock]::Create($this.ScriptBlock))
 				}
 				else {
 					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
 					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
 				}
-				if ($this.Arguments) {
+				if ($PSBoundParameters.ContainsKey('Arguments')) {
 					Write-Verbose 'Adding parameter: ArgumentList'
 					$ParamSplat.Add('ArgumentList', $this.Arguments)
 				}
-				if ($this.Authentication) {
+				if ($PSBoundParameters.ContainsKey('Authentication')) {
 					Write-Verbose 'Adding parameter: Authentication'
 					$ParamSplat.Add('Authentication', $this.Authentication)
 				}
-				if ($this.Credential) {
+				if ($PSBoundParameters.ContainsKey('Credential')) {
 					Write-Verbose 'Adding parameter: Credential'
 					$ParamSplat.Add('Credential', $this.Credential)
 				}
-				if ($this.InitializationScript) {
+				if ($PSBoundParameters.ContainsKey('InitializationScript')) {
 					Write-Verbose 'Adding parameter: InitializationScript'
 					$ParamSplat.Add('InitializationScript', $this.InitializationScript)
 				}
-				if ($this.MaxResultCount) {
+				if ($PSBoundParameters.ContainsKey('MaxResultCount')) {
 					Write-Verbose 'Adding parameter: MaxResultCount'
 					$ParamSplat.Add('MaxResultCount', $this.MaxResultCount)
 				}
-				if ($null -ne $this.RunAs32) {
+				if ($PSBoundParameters.ContainsKey('RunAs32')) {
 					Write-Verbose 'Adding parameter: RunAs32'
 					$ParamSplat.Add('RunAs32', $this.RunAs32)
 				}
-				if ($null -ne $this.ContinueIfGoingOnBattery) {
+				if ($PSBoundParameters.ContainsKey('ContinueIfGoingOnBattery')) {
 					Write-Verbose 'Adding parameter: ContinueIfGoingOnBattery'
 					$OptionSplat.Add('ContinueIfGoingOnBattery', $this.ContinueIfGoingOnBattery)
 				}
-				if ($null -ne $this.DoNotAllowDemandStart) {
+				if ($PSBoundParameters.ContainsKey('DoNotAllowDemandStart')) {
 					Write-Verbose 'Adding parameter: DoNotAllowDemandStart'
 					$OptionSplat.Add('DoNotAllowDemandStart', $this.DoNotAllowDemandStart)
 				}
-				if ($null -ne $this.HideInTaskScheduler) {
+				if ($PSBoundParameters.ContainsKey('HideInTaskScheduler')) {
 					Write-Verbose 'Adding parameter: HideInTaskScheduler'
 					$OptionSplat.Add('HideInTaskScheduler', $this.HideInTaskScheduler)
 				}
-				if ($this.IdleDuration) {
+				if ($PSBoundParameters.ContainsKey('IdleDuration')) {
 					Write-Verbose 'Adding parameter: IdleDuration'
 					$OptionSplat.Add('IdleDuration', $this.IdleDuration)
 				}
-				if ($this.IdleTimeout) {
+				if ($PSBoundParameters.ContainsKey('IdleTimeout')) {
 					Write-Verbose 'Adding parameter: IdleTimeout'
 					$OptionSplat.Add('IdleTimeout', $this.IdleTimeout)
 				}
-				if ($this.MultipleInstancePolicy) {
+				if ($PSBoundParameters.ContainsKey('MultipleInstancePolicy')) {
 					Write-Verbose 'Adding parameter: MultipleInstancePolicy'
 					$OptionSplat.Add('MultipleInstancePolicy', $this.MultipleInstancePolicy)
 				}
-				if ($null -ne $this.WakeToRun) {
+				if ($PSBoundParameters.ContainsKey('WakeToRun')) {
 					Write-Verbose 'Adding parameter: WakeToRun'
 					$OptionSplat.Add('WakeToRun', $this.WakeToRun)
 				}
-				if ($null -ne $this.RequireNetwork) {
+				if ($PSBoundParameters.ContainsKey('RequireNetwork')) {
 					Write-Verbose 'Adding parameter: RequireNetwork'
 					$OptionSplat.Add('RequireNetwork', $this.RequireNetwork)
 				}
-				if ($null -ne $this.RestartOnIdleResume) {
+				if ($PSBoundParameters.ContainsKey('RestartOnIdleResume')) {
 					Write-Verbose 'Adding parameter: RestartOnIdleResume'
 					$OptionSplat.Add('RestartOnIdleResume', $this.RestartOnIdleResume)
 				}
-				if ($null -ne $this.RunElevated) {
+				if ($PSBoundParameters.ContainsKey('RunElevated')) {
 					Write-Verbose 'Adding parameter: RunElevated'
 					$OptionSplat.Add('RunElevated', $this.RunElevated)
 				}
-				if ($null -ne $this.StartIfIdle) {
+				if ($PSBoundParameters.ContainsKey('StartIfIdle')) {
 					Write-Verbose 'Adding parameter: StartIfIdle'
 					$OptionSplat.Add('StartIfIdle', $this.StartIfIdle)
 				}
-				if ($null -ne $this.StartIfOnBattery) {
+				if ($PSBoundParameters.ContainsKey('StartIfOnBattery')) {
 					Write-Verbose 'Adding parameter: StartIfOnBattery'
 					$OptionSplat.Add('StartIfOnBattery', $this.StartIfOnBattery)
 				}
-				if ($null -ne $this.StopIfGoingOffIdle) {
+				if ($PSBoundParameters.ContainsKey('StopIfGoingOffIdle')) {
 					Write-Verbose 'Adding parameter: StopIfGoingOffIdle'
 					$OptionSplat.Add('StopIfGoingOffIdle', $this.StopIfGoingOffIdle)
 				}
@@ -530,7 +530,7 @@ class cScheduledJob {
 				}
 				Register-ScheduledJob @ParamSplat 
 
-				if ($null -ne $this.Enabled -and $this.Enabled -eq $false) {
+				if ($PSBoundParameters.ContainsKey('Enabled') -and $this.Enabled -eq $false) {
 					Write-Verbose 'Disabling job.'
 					Disable-ScheduledJob -Name $this.Name
 				}
