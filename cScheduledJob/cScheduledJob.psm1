@@ -449,63 +449,83 @@ class cScheduledJob {
 					throw 'A Scheduled Job must have a FilePath OR a ScriptBlock. It must not have both.'
 				}
 				if ($this.Arguments) {
+					Write-Verbose 'Adding parameter: ArgumentList'
 					$ParamSplat.Add('ArgumentList', $this.Arguments)
 				}
 				if ($this.Authentication) {
+					Write-Verbose 'Adding parameter: Authentication'
 					$ParamSplat.Add('Authentication', $this.Authentication)
 				}
 				if ($this.Credential) {
+					Write-Verbose 'Adding parameter: Credential'
 					$ParamSplat.Add('Credential', $this.Credential)
 				}
 				if ($this.InitializationScript) {
+					Write-Verbose 'Adding parameter: InitializationScript'
 					$ParamSplat.Add('InitializationScript', $this.InitializationScript)
 				}
 				if ($this.MaxResultCount) {
+					Write-Verbose 'Adding parameter: MaxResultCount'
 					$ParamSplat.Add('MaxResultCount', $this.MaxResultCount)
 				}
 				if ($null -ne $this.RunAs32) {
+					Write-Verbose 'Adding parameter: RunAs32'
 					$ParamSplat.Add('RunAs32', $this.RunAs32)
 				}
 				if ($null -ne $this.ContinueIfGoingOnBattery) {
+					Write-Verbose 'Adding parameter: ContinueIfGoingOnBattery'
 					$OptionSplat.Add('ContinueIfGoingOnBattery', $this.ContinueIfGoingOnBattery)
 				}
 				if ($null -ne $this.DoNotAllowDemandStart) {
+					Write-Verbose 'Adding parameter: DoNotAllowDemandStart'
 					$OptionSplat.Add('DoNotAllowDemandStart', $this.DoNotAllowDemandStart)
 				}
 				if ($null -ne $this.HideInTaskScheduler) {
+					Write-Verbose 'Adding parameter: HideInTaskScheduler'
 					$OptionSplat.Add('HideInTaskScheduler', $this.HideInTaskScheduler)
 				}
 				if ($this.IdleDuration) {
+					Write-Verbose 'Adding parameter: IdleDuration'
 					$OptionSplat.Add('IdleDuration', $this.IdleDuration)
 				}
 				if ($this.IdleTimeout) {
+					Write-Verbose 'Adding parameter: IdleTimeout'
 					$OptionSplat.Add('IdleTimeout', $this.IdleTimeout)
 				}
 				if ($this.MultipleInstancePolicy) {
+					Write-Verbose 'Adding parameter: MultipleInstancePolicy'
 					$OptionSplat.Add('MultipleInstancePolicy', $this.MultipleInstancePolicy)
 				}
 				if ($null -ne $this.WakeToRun) {
+					Write-Verbose 'Adding parameter: WakeToRun'
 					$OptionSplat.Add('WakeToRun', $this.WakeToRun)
 				}
 				if ($null -ne $this.RequireNetwork) {
+					Write-Verbose 'Adding parameter: RequireNetwork'
 					$OptionSplat.Add('RequireNetwork', $this.RequireNetwork)
 				}
 				if ($null -ne $this.RestartOnIdleResume) {
+					Write-Verbose 'Adding parameter: RestartOnIdleResume'
 					$OptionSplat.Add('RestartOnIdleResume', $this.RestartOnIdleResume)
 				}
 				if ($null -ne $this.RunElevated) {
+					Write-Verbose 'Adding parameter: RunElevated'
 					$OptionSplat.Add('RunElevated', $this.RunElevated)
 				}
 				if ($null -ne $this.StartIfIdle) {
+					Write-Verbose 'Adding parameter: StartIfIdle'
 					$OptionSplat.Add('StartIfIdle', $this.StartIfIdle)
 				}
 				if ($null -ne $this.StartIfOnBattery) {
+					Write-Verbose 'Adding parameter: StartIfOnBattery'
 					$OptionSplat.Add('StartIfOnBattery', $this.StartIfOnBattery)
 				}
 				if ($null -ne $this.StopIfGoingOffIdle) {
+					Write-Verbose 'Adding parameter: StopIfGoingOffIdle'
 					$OptionSplat.Add('StopIfGoingOffIdle', $this.StopIfGoingOffIdle)
 				}
 				if ($OptionSplat.Count -gt 0) {
+					Write-Verbose 'Adding parameter: ScheduledJobOption'
 					$ParamSplat.Add('ScheduledJobOption', (New-ScheduledJobOption @OptionSplat))
 				}
 				Register-ScheduledJob @ParamSplat 
