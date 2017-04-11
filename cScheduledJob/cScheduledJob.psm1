@@ -337,9 +337,9 @@ class cScheduledJob {
 				}
 				elseif ($this.ScriptBlock -and -not $this.FilePath) {
 					Write-Verbose 'Job is a ScriptBlock job.'
-					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value) {
+					if ($this.ScriptBlock -ne $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ScriptBlock'}.value.tostring()) {
 						Write-Verbose 'ScriptBlock does not match.'
-						$ParamSplat.Add('ScriptBlock', $this.ScriptBlock)
+						$ParamSplat.Add('ScriptBlock', [scriptblock]::Create($this.ScriptBlock))
 					}
 				}
 				else {
@@ -442,7 +442,7 @@ class cScheduledJob {
 					$ParamSplat.Add('FilePath', $this.FilePath)
 				}
 				elseif ($this.ScriptBlock -and -not $this.FilePath) {
-					$ParamSplat.Add('ScriptBlock', $this.ScriptBlock)
+					$ParamSplat.Add('ScriptBlock', [scriptblock]::Create($this.ScriptBlock))
 				}
 				else {
 					Write-Verbose 'Job either does not specify a FilePath, does not specify a ScriptBlock, or specifies both.'
