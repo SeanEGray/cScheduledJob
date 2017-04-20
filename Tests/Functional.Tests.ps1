@@ -11,7 +11,6 @@ Describe 'Get' {
 	It 'Correctly retrieve FilePath job' {
 		$job = New-Object -TypeName cScheduledJob
 		$job.Name = 'FilePathJob'
-		#$job.Ensure = 'Present'
 		$job.Get()
 		$job.Name | Should Be 'FilePathJob'
 		$job.Ensure | Should Be 'Present'
@@ -36,7 +35,6 @@ Describe 'Get' {
 	It 'Correctly retrieve ScriptBlock job' {
 		$job = New-Object -TypeName cScheduledJob
 		$job.Name = 'ScriptBlockJob'
-		#$job.Ensure = 'Present'
 		$job.Get()
 		$job.Name | Should Be 'ScriptBlockJob'
 		$job.Ensure | Should Be 'Present'
@@ -84,16 +82,30 @@ Describe 'Test' {
 		Register-ScheduledJob -ScriptBlock $TestSB -Name 'ScriptBlockJob'
 	}
 	It 'Return false for job that should not exist but does' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Absent'} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Absent'
+		$job.Test() | Should Be $false
 	}
 	It 'Return false for job that should exist but does not' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Get -Property @{Name='DoesNotExist'; Ensure='Present'} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'DoesNotExist'
+		$job.Ensure = 'Present'
+		$job.Test() | Should Be $false
 	}
 	It 'Return false for FilePath not matching' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; FilePath='DoesNotMatch'} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		$job.FilePath = 'DoesNotMatch'
+		$job.Test() | Should Be $false
 	}
 	It 'Return false for Enabled not matching' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; Enabled=$false} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		$job.Enabled = $false
+		$job.Test() | Should Be $false
 	}
 	It 'Return false for Arguments not matching' {
 
@@ -105,31 +117,62 @@ Describe 'Test' {
 
 	}
 	It 'Return false for MaxResultCount not matching' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; MaxResultCount=42} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		$job.MaxResultCount = 42
+		$job.Test() | Should Be $false
 	}
 	It 'Return false for RunAs32 not matching' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; RunAs32=$true} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		$job.RunAs32 = $true
+		$job.Test() | Should Be $false
 	}
 	It 'Throw if FilePath and ScriptBlock are both specified' {
-		{Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; FilePath=$TestScript; ScriptBlock=$TestSB}} | Should Throw
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		$job.FilePath = $TestScript
+		$job.ScriptBlock = $TestSB
+		{$job.Test()} | Should Throw
 	}
 	It 'Throw if neither FilePath nor ScriptBlock are specified' {
-		{Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; }} | Should Throw
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		{$job.Test()} | Should Throw
 	}
 	It 'Return false for ScriptBlock not matching' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='ScriptBlockJob'; Ensure='Present'; ScriptBlock='DoesNotMatch'} | Should Be $false
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'ScriptBlockJob'
+		$job.Ensure = 'Present'
+		$job.ScriptBlock = 'DoesNotMatch'
+		$job.Test() | Should Be $false
 	}
 	It 'Return true for FilePath job that is correct' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; FilePath=$TestScript} | Should Be $true
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		$job.Ensure = 'Present'
+		$job.FilePath = $TestScript
+		$job.Test() | Should Be $true
 	}
 	It 'Return true for ScriptPath job that is correct' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='FilePathJob'; Ensure='Present'; ScriptBlock=$TestSB} | Should Be $true
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'ScriptBlockJob'
+		$job.Ensure = 'Present'
+		$job.ScriptBlock = $TestSB
+		$job.Test() | Should Be $true
 	}
 	It 'Return true for job that matches all optional parameters' {
 
 	}
 	It 'Return true for job that should not exist and does not' {
-		Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Test -Property @{Name='DoesNotExist'; Ensure='Absent'} | Should Be $true
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'DoesNotExist'
+		$job.Ensure = 'Absent'
+		$job.Test() | Should Be $true
 	}
 	AfterAll {
 		Get-ScheduledJob -Name 'FilePathJob','ScriptBlockJob' | Unregister-ScheduledJob -Force
