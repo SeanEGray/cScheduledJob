@@ -1,3 +1,5 @@
+Using module ..\cScheduledJob.psm1
+
 Describe 'Get' {
 	BeforeAll {
 		$TestScript = 'Testdrive:\TestScript.ps1'
@@ -7,7 +9,10 @@ Describe 'Get' {
 		Register-ScheduledJob -ScriptBlock $TestSB -Name 'ScriptBlockJob'
 	}
 	It 'Correctly retrieve FilePath job' {
-		$job = Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Get -Property @{Name='FilePathJob'; Ensure='Present'}
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'FilePathJob'
+		#$job.Ensure = 'Present'
+		$job.Get()
 		$job.Name | Should Be 'FilePathJob'
 		$job.Ensure | Should Be 'Present'
 		$job.Enabled | Should Be $true
@@ -29,7 +34,10 @@ Describe 'Get' {
 		$job.MultipleInstancePolicy | Should Be 'IgnoreNew'
 	}
 	It 'Correctly retrieve ScriptBlock job' {
-		$job = Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Get -Property @{Name='ScriptBlockJob'; Ensure='Present'}
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'ScriptBlockJob'
+		#$job.Ensure = 'Present'
+		$job.Get()
 		$job.Name | Should Be 'ScriptBlockJob'
 		$job.Ensure | Should Be 'Present'
 		$job.Enabled | Should Be $true
@@ -57,7 +65,9 @@ Describe 'Get' {
 
 	}
 	It 'Correctly report non-existent job' {
-		$job = Invoke-DscResource -Name cScheduledJob -ModuleName cScheduledJob -Method Get -Property @{Name='DoesNotExist'; Ensure='Present'}
+		$job = New-Object -TypeName cScheduledJob
+		$job.Name = 'DoesNotExist'
+		$job.Get()
 		$job.Ensure | Should Be 'Absent'
 	}
 	AfterAll {
