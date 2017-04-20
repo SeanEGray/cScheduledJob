@@ -145,7 +145,7 @@ class cScheduledJob {
 				$this.Arguments = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'ArgumentList'}.value
 			}
 			Write-Verbose 'Checking authentication method.'
-			$this.Authentication = $job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value
+			$this.Authentication = "$($job.InvocationInfo.Parameters[0].where{$_.name -eq 'Authentication'}.value)"
 			Write-Verbose 'Checking credential that job runs under.'
 			$this.Credential = $job.Credential
 			Write-Verbose 'Checking whether job has an initialization script.'
@@ -182,7 +182,7 @@ class cScheduledJob {
 			Write-Verbose 'Checking whether this job can run on demand.'
 			$this.DoNotAllowDemandStart = $job.Options.DoNotAllowDemandStart
 			Write-Verbose "Checking this job's multiple instance policy."
-			$this.MultipleInstancePolicy = $job.Options.MultipleInstancePolicy
+			$this.MultipleInstancePolicy = "$($job.Options.MultipleInstancePolicy)"
 		}
 		else {
 			Write-Verbose 'Job not found.'
