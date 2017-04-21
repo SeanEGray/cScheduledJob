@@ -195,7 +195,7 @@ class cScheduledJob {
 		Write-Verbose "Testing for Scheduled Job: $($this.Name)."
 		$job = Get-ScheduledJob -Name $this.Name -ErrorAction Ignore
 		if ($job.Count -eq 1) {
-			if ([Ensure]::Absent) {
+			if ($this.Ensure -eq [Ensure]::Absent) {
 				Write-Verbose 'Job should not exist.'
 				return $false
 			}
