@@ -1,3 +1,5 @@
+Using module ..\cScheduledJob.psm1
+
 <# 
 	Run everything through PSScriptAnalyzer
 #>
@@ -18,8 +20,6 @@ foreach ($PSFile in $PSFiles) {
 <#
 	Functional tests
 #>
-
-Using module ..\cScheduledJob.psm1
 
 Describe 'Get' {
 	BeforeAll {
